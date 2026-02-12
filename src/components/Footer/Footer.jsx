@@ -18,6 +18,9 @@ function Footer() {
             </a>
           </li>
         </ul>
+        <p className="footer-copyright">
+          &copy; {new Date().getFullYear()} Yaze. All rights reserved.
+        </p>
       </div>
     </footer>
   );
