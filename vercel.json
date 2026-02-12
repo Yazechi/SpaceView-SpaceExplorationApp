@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/exoplanet-api/:path*",
+      "destination": "https://exoplanetarchive.ipac.caltech.edu/:path*"
+    }
+  ]
+}
