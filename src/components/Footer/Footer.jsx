@@ -13,13 +13,23 @@ function Footer() {
           <li><Link to="/astronauts">Astronauts</Link></li>
           <li><Link to="/celestial-bodies">Celestial Bodies</Link></li>
           <li>
+            <a href="https://github.com/Yazechi" target="_blank" rel="noopener noreferrer">
+              GitHub Profile
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/Yazechi/SpaceView-SpaceExplorationApp" target="_blank" rel="noopener noreferrer">
+              Project Repository
+            </a>
+          </li>
+          <li>
             <a href="https://api.nasa.gov/" target="_blank" rel="noopener noreferrer">
               NASA API
             </a>
           </li>
         </ul>
         <p className="footer-copyright">
-          &copy; {new Date().getFullYear()} Yaze. All rights reserved.
+          &copy; {new Date().getFullYear()} Yazechi. All rights reserved.
         </p>
       </div>
     </footer>

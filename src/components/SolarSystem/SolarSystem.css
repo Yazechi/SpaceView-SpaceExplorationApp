@@ -1,60 +1,175 @@
 .solar-system-container {
   width: 100%;
-  height: 600px;
+  height: 650px;
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid var(--color-border);
-  background: #000008;
+  background: radial-gradient(circle at center, #070b13 0%, #000003 100%);
   position: relative;
-}
-
-.solar-system-info {
-  position: absolute;
-  bottom: 1.5rem;
-  left: 1.5rem;
-  background: rgba(10, 14, 23, 0.9);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 1rem 1.25rem;
-  max-width: 320px;
-  z-index: 10;
-  pointer-events: none;
-}
-
-.solar-system-info h3 {
-  font-size: 1.1rem;
-  margin-bottom: 0.35rem;
-  color: var(--color-accent);
-}
-
-.solar-system-info p {
-  font-size: 0.85rem;
-  color: var(--color-text-secondary);
-  line-height: 1.5;
 }
 
 .solar-system-hint {
   position: absolute;
   top: 1rem;
-  right: 1rem;
-  background: rgba(10, 14, 23, 0.7);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10, 14, 23, 0.75);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: var(--radius-sm);
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem 1rem;
   font-size: 0.8rem;
   color: var(--color-text-secondary);
   z-index: 10;
   pointer-events: none;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Modern Pop-up Card - Glassmorphism */
+.solar-system-modal {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  width: 360px;
+  max-height: 85%;
+  background: rgba(17, 24, 39, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  color: var(--color-text-primary);
+  overflow-y: auto;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.solar-system-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.75rem;
+}
+
+.solar-system-modal-header h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #f9fafb;
+  letter-spacing: -0.5px;
+}
+
+.solar-system-modal-close {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 1.75rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0.25rem;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.solar-system-modal-close:hover {
+  color: #ffffff;
+  transform: scale(1.1);
+}
+
+.solar-system-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.solar-system-modal-description {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.solar-system-modal-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  font-size: 0.85rem;
+}
+
+.detail-label {
+  color: var(--color-text-secondary);
+}
+
+.detail-val {
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.modal-facts-section {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.modal-facts-section h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #f3f4f6;
+}
+
+.modal-facts-section ul {
+  list-style-type: none;
+  padding-left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.modal-facts-section li {
+  font-size: 0.825rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  position: relative;
+  padding-left: 1rem;
+}
+
+.modal-facts-section li::before {
+  content: "•";
+  color: var(--color-accent);
+  font-weight: bold;
+  position: absolute;
+  left: 0;
 }
 
 @media (max-width: 768px) {
   .solar-system-container {
-    height: 400px;
+    height: 480px;
   }
 
-  .solar-system-info {
+  .solar-system-hint {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.8rem;
+    width: 90%;
+  }
+
+  .solar-system-modal {
     bottom: 0.75rem;
     left: 0.75rem;
-    max-width: 250px;
-    padding: 0.75rem;
+    right: 0.75rem;
+    width: auto;
+    max-height: 50%;
+    padding: 1rem;
   }
 }
