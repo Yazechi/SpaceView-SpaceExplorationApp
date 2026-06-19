@@ -233,3 +233,125 @@
   .exo-controls { flex-direction: column; }
   .filter-group select { min-width: unset; width: 100%; }
 }
+
+/* 3D Exoplanet Orbit Simulator Section */
+.exo-orbit-section {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-lg);
+}
+
+.exo-orbit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.75rem;
+}
+
+.exo-orbit-header h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.exo-orbit-close {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 1.75rem;
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.exo-orbit-close:hover {
+  color: #ffffff;
+}
+
+.exo-orbit-sandbox {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 2rem;
+}
+
+.exo-canvas-container {
+  height: 380px;
+  background: #020617;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.exo-orbit-readout {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+}
+
+.exo-orbit-readout h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #f3f4f6;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 0.5rem;
+}
+
+.readout-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.readout-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.readout-row .label {
+  color: var(--color-text-secondary);
+}
+
+.readout-row .val {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.readout-row .val.highlighted {
+  color: #60a5fa;
+}
+
+.readout-note {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  margin-top: 1.5rem;
+  line-height: 1.4;
+  font-style: italic;
+}
+
+/* Selected row highlight inside the exoplanet table */
+.selected-row {
+  background: rgba(99, 102, 241, 0.08) !important;
+  border-left: 3px solid #34d399;
+}
+
+@media (max-width: 768px) {
+  .exo-orbit-sandbox {
+    grid-template-columns: 1fr;
+  }
+  .exo-canvas-container {
+    height: 280px;
+  }
+}

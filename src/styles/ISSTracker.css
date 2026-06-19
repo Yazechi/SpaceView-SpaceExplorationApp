@@ -99,17 +99,63 @@
 
 .iss-map {
   width: 100%;
-  height: auto;
+  height: 500px;
   display: block;
+  background: #090d16;
+  z-index: 1;
 }
 
-.iss-pulse {
-  animation: issPulse 2s ease-in-out infinite;
+.custom-iss-icon {
+  background: none;
+  border: none;
 }
 
-@keyframes issPulse {
-  0%, 100% { r: 12; opacity: 0.4; }
-  50% { r: 18; opacity: 0.1; }
+.pulsing-marker {
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+
+.pulsing-marker .inner-dot {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 8px;
+  height: 8px;
+  background: #3b82f6;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #3b82f6;
+}
+
+.pulsing-marker .outer-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  border: 2px solid #3b82f6;
+  border-radius: 50%;
+  opacity: 0.8;
+  animation: pulse-ring 1.8s cubic-bezier(0.215, 0.610, 0.355, 1) infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.3); opacity: 0.8; }
+  80%, 100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* Style Leaflet popups to match dark theme */
+.leaflet-popup-content-wrapper {
+  background: var(--color-bg-card) !important;
+  color: var(--color-text-primary) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 8px !important;
+  font-family: var(--font-family) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.leaflet-popup-tip {
+  background: var(--color-bg-card) !important;
 }
 
 .iss-info-section {

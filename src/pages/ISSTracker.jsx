@@ -5,17 +5,76 @@ const ISS_API = 'https://api.wheretheiss.at/v1/satellites/25544';
 
 function ISSTracker() {
   const [position, setPosition] = useState(null);
-  const [history, setHistory] = useState([]);
   const [error, setError] = useState(null);
   const [isPaused, setIsPaused] = useState(false);
-  const svgRef = useRef(null);
+  const [history, setHistory] = useState(() => {
+    try {
+      const saved = localStorage.getItem('iss_trail_history');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+  
+  const mapContainerRef = useRef(null);
+  const mapRef = useRef(null);
+  const markerRef = useRef(null);
+  const polylineRef = useRef(null);
   const intervalRef = useRef(null);
+
+  // Initialize Map
+  useEffect(() => {
+    const L = window.L;
+    if (L && mapContainerRef.current && !mapRef.current) {
+      // Create Leaflet map instance
+      mapRef.current = L.map(mapContainerRef.current, {
+        zoomControl: true,
+        attributionControl: false
+      }).setView([0, 0], 2);
+
+      // Add CartoDB Dark Matter tiles
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        maxZoom: 18,
+      }).addTo(mapRef.current);
+
+      // Initialize path polyline for tracking ISS orbit history with high visibility neon cyan color
+      polylineRef.current = L.polyline(history, {
+        color: '#00d4ff',
+        weight: 3,
+        opacity: 0.85
+      }).addTo(mapRef.current);
+
+      // Center map on last saved coordinate if available
+      if (history.length > 0) {
+        mapRef.current.setView(history[history.length - 1], 3);
+      }
+    }
+
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, []);
+
+  // Sync history state changes with polyline map overlay and localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('iss_trail_history', JSON.stringify(history));
+    } catch (e) {}
+
+    if (polylineRef.current) {
+      polylineRef.current.setLatLngs(history);
+    }
+  }, [history]);
 
   const fetchPosition = useCallback(async () => {
     try {
       const res = await fetch(ISS_API);
       if (!res.ok) throw new Error('Failed to fetch ISS position');
       const data = await res.json();
+      
       const pos = {
         lat: data.latitude,
         lng: data.longitude,
@@ -23,9 +82,55 @@ function ISSTracker() {
         altitude: data.altitude,
         timestamp: data.timestamp,
       };
+
       setPosition(pos);
-      setHistory((prev) => [...prev.slice(-60), pos]);
       setError(null);
+
+      // Update map position and marker
+      const L = window.L;
+      if (L && mapRef.current) {
+        const latlng = [pos.lat, pos.lng];
+
+        // Center map on ISS on first load
+        if (!markerRef.current) {
+          mapRef.current.setView(latlng, 3);
+          
+          // Create custom pulsing icon
+          const issIcon = L.divIcon({
+            className: 'custom-iss-icon',
+            html: `
+              <div class="pulsing-marker">
+                <div class="inner-dot"></div>
+                <div class="outer-ring"></div>
+              </div>
+            `,
+            iconSize: [24, 24],
+            iconAnchor: [12, 12]
+          });
+
+          // Add ISS marker
+          markerRef.current = L.marker(latlng, { icon: issIcon })
+            .addTo(mapRef.current)
+            .bindPopup(`<b>ISS Location</b><br>Lat: ${pos.lat.toFixed(4)}<br>Lng: ${pos.lng.toFixed(4)}`)
+            .openPopup();
+        } else {
+          // Update marker position
+          markerRef.current.setLatLng(latlng);
+          markerRef.current.getPopup().setContent(`<b>ISS Location</b><br>Lat: ${pos.lat.toFixed(4)}<br>Lng: ${pos.lng.toFixed(4)}`);
+          
+          // Smoothly pan map to follow the ISS
+          mapRef.current.panTo(latlng);
+        }
+
+        // Add coordinate to trail (avoid duplicate updates)
+        setHistory((prev) => {
+          const lastPoint = prev[prev.length - 1];
+          if (lastPoint && lastPoint[0] === latlng[0] && lastPoint[1] === latlng[1]) {
+            return prev;
+          }
+          return [...prev, latlng].slice(-100); // keep last 100 points
+        });
+      }
     } catch (err) {
       setError(err.message);
     }
@@ -39,20 +144,21 @@ function ISSTracker() {
     return () => clearInterval(intervalRef.current);
   }, [fetchPosition, isPaused]);
 
-  // Convert lat/lng to SVG coordinates (equirectangular projection)
-  function toSVG(lat, lng) {
-    const x = ((lng + 180) / 360) * 1000;
-    const y = ((90 - lat) / 180) * 500;
-    return { x, y };
-  }
-
-  const issPos = position ? toSVG(position.lat, position.lng) : null;
+  const handleClearTrail = () => {
+    setHistory([]);
+    try {
+      localStorage.removeItem('iss_trail_history');
+    } catch (e) {}
+    if (polylineRef.current) {
+      polylineRef.current.setLatLngs([]);
+    }
+  };
 
   return (
     <div className="iss-tracker-page">
       <div className="iss-hero">
         <h1>ISS Live Tracker</h1>
-        <p>Track the International Space Station in real-time as it orbits Earth</p>
+        <p>Track the International Space Station in real-time on an interactive map</p>
       </div>
 
       {position && (
@@ -80,69 +186,15 @@ function ISSTracker() {
         <button onClick={() => setIsPaused(!isPaused)}>
           {isPaused ? 'Resume Tracking' : 'Pause Tracking'}
         </button>
-        <button onClick={() => setHistory([])}>Clear Trail</button>
+        <button onClick={handleClearTrail}>Clear Trail</button>
         <span className="update-note">Updates every 5 seconds</span>
       </div>
 
       {error && <p className="iss-error">{error}</p>}
 
       <div className="iss-map-container">
-        <svg ref={svgRef} viewBox="0 0 1000 500" className="iss-map">
-          {/* World map outline (simplified) */}
-          <rect x="0" y="0" width="1000" height="500" fill="#0a1628" />
-          
-          {/* Grid lines */}
-          {Array.from({ length: 7 }, (_, i) => (
-            <line key={`h${i}`} x1="0" y1={i * 83.3} x2="1000" y2={i * 83.3} stroke="#1a2a4a" strokeWidth="0.5" />
-          ))}
-          {Array.from({ length: 13 }, (_, i) => (
-            <line key={`v${i}`} x1={i * 83.3} y1="0" x2={i * 83.3} y2="500" stroke="#1a2a4a" strokeWidth="0.5" />
-          ))}
-
-          {/* Equator */}
-          <line x1="0" y1="250" x2="1000" y2="250" stroke="#2a3a5a" strokeWidth="1" strokeDasharray="4,4" />
-          {/* Prime meridian */}
-          <line x1="500" y1="0" x2="500" y2="500" stroke="#2a3a5a" strokeWidth="1" strokeDasharray="4,4" />
-
-          {/* Simplified continent outlines */}
-          {/* North America */}
-          <ellipse cx="250" cy="170" rx="120" ry="80" fill="#162040" stroke="#2a4a7a" strokeWidth="1" />
-          {/* South America */}
-          <ellipse cx="310" cy="320" rx="60" ry="90" fill="#162040" stroke="#2a4a7a" strokeWidth="1" />
-          {/* Europe */}
-          <ellipse cx="520" cy="150" rx="50" ry="40" fill="#162040" stroke="#2a4a7a" strokeWidth="1" />
-          {/* Africa */}
-          <ellipse cx="540" cy="280" rx="60" ry="80" fill="#162040" stroke="#2a4a7a" strokeWidth="1" />
-          {/* Asia */}
-          <ellipse cx="680" cy="170" rx="120" ry="70" fill="#162040" stroke="#2a4a7a" strokeWidth="1" />
-          {/* Australia */}
-          <ellipse cx="800" cy="340" rx="50" ry="35" fill="#162040" stroke="#2a4a7a" strokeWidth="1" />
-
-          {/* Trail */}
-          {history.map((point, i) => {
-            const pos = toSVG(point.lat, point.lng);
-            const opacity = (i + 1) / history.length * 0.6;
-            return (
-              <circle
-                key={i}
-                cx={pos.x}
-                cy={pos.y}
-                r="2"
-                fill="#00d4ff"
-                opacity={opacity}
-              />
-            );
-          })}
-
-          {/* ISS marker */}
-          {issPos && (
-            <g>
-              <circle cx={issPos.x} cy={issPos.y} r="12" fill="none" stroke="#00d4ff" strokeWidth="2" className="iss-pulse" />
-              <circle cx={issPos.x} cy={issPos.y} r="5" fill="#00d4ff" />
-              <text x={issPos.x + 16} y={issPos.y + 4} fill="#ffffff" fontSize="12" fontFamily="monospace">ISS</text>
-            </g>
-          )}
-        </svg>
+        {/* Div container for Leaflet map */}
+        <div ref={mapContainerRef} className="iss-map"></div>
       </div>
 
       <div className="iss-info-section">
