@@ -35,7 +35,10 @@ function Home() {
       <div className="container">
         {/* Hero Section */}
         <section className="home-hero">
-          <h1>Explore the Cosmos</h1>
+          <h1>SpaceView</h1>
+          <p style={{ fontSize: '1.25rem', fontWeight: '500', color: 'var(--color-text-primary)', marginBottom: '0.75rem', marginTop: '-0.5rem' }}>
+            Explore the Cosmos
+          </p>
           <p>
             Discover space missions, learn about astronauts, explore celestial
             bodies, and journey through the history of space exploration.
