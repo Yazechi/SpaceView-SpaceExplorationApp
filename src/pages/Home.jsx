@@ -2,11 +2,18 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAPOD } from '../services/nasaApi';
 import { missions, astronauts } from '../data/spaceData';
+import useSEO from '../hooks/useSEO';
 import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage/ErrorMessage';
 import '../styles/Home.css';
 
 function Home() {
+  useSEO({
+    title: 'Explore NASA Data, ISS Tracker & The Cosmos',
+    description: 'Explore live NASA mission data, track the ISS in real-time, view high-res Mars Rover galleries, and discover the cosmos with SpaceView.',
+    canonicalUrl: 'https://space-view-rho.vercel.app/',
+  });
+
   const [apod, setApod] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

@@ -1,10 +1,17 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { missions } from '../data/spaceData';
+import useSEO from '../hooks/useSEO';
 import SearchBar from '../components/SearchBar/SearchBar';
 import '../styles/Missions.css';
 
 function Missions() {
+  useSEO({
+    title: 'Space Missions Directory',
+    description: 'Explore past, active, and future space exploration missions from NASA, ESA, and international agencies with SpaceView.',
+    canonicalUrl: 'https://space-view-rho.vercel.app/missions',
+  });
+
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
 

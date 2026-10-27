@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { searchNASAImages } from '../services/nasaApi';
 import { missions, astronauts, celestialBodies } from '../data/spaceData';
+import useSEO from '../hooks/useSEO';
 import SearchBar from '../components/SearchBar/SearchBar';
 import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage/ErrorMessage';
@@ -9,6 +10,11 @@ import '../styles/Search.css';
 import '../styles/Missions.css';
 
 function Search() {
+  useSEO({
+    title: "Search NASA Missions, Images & Cosmos",
+    description: "Search across NASA space missions, astronaut profiles, celestial bodies, and NASA imagery archives on SpaceView.",
+    canonicalUrl: "https://space-view-rho.vercel.app/search",
+  });
   const [query, setQuery] = useState('');
   const [activeTab, setActiveTab] = useState('all');
   const [nasaResults, setNasaResults] = useState([]);

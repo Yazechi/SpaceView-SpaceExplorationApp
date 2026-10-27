@@ -3,6 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { getExoplanets } from '../services/nasaApi';
+import useSEO from '../hooks/useSEO';
 import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage/ErrorMessage';
 import '../styles/Exoplanets.css';
@@ -106,6 +107,12 @@ function ExoplanetOrbitScene({ planet }) {
 }
 
 function Exoplanets() {
+  useSEO({
+    title: 'Exoplanet Explorer & 3D Orbits',
+    description: 'Explore confirmed exoplanets using NASA Exoplanet Archive TAP data with interactive 3D orbital mechanics visualization on SpaceView.',
+    canonicalUrl: 'https://space-view-rho.vercel.app/exoplanets',
+  });
+
   const [allPlanets, setAllPlanets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);

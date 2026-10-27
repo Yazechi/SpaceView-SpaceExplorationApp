@@ -97,8 +97,8 @@ function MoonOrbitLine({ distance, color = '#4b5563', opacity = 0.2 }) {
 function Planet({ planet, onClick, isSelected }) {
   const groupRef = useRef();
   const planetRef = useRef();
-  const angle = useRef(Math.random() * Math.PI * 2);
-  const moonAngles = useRef(planet.moons.map(() => Math.random() * Math.PI * 2));
+  const angle = useRef(planet.distance * 1.618);
+  const moonAngles = useRef(planet.moons.map((_, idx) => idx * 1.5 + 0.5));
 
   useFrame((state, delta) => {
     // Orbital motion around the Sun

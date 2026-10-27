@@ -1,10 +1,17 @@
 import { useState, useEffect } from 'react';
 import { getInSightWeather } from '../services/nasaApi';
+import useSEO from '../hooks/useSEO';
 import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage/ErrorMessage';
 import '../styles/InSight.css';
 
 function InSight() {
+  useSEO({
+    title: 'InSight Mars Weather & Atmospheric Data',
+    description: 'Explore atmospheric weather reports, temperatures, wind, and air pressure recorded on Elysium Planitia, Mars by NASA InSight.',
+    canonicalUrl: 'https://space-view-rho.vercel.app/insight',
+  });
+
   const [solData, setSolData] = useState([]);
   const [selectedSol, setSelectedSol] = useState(null);
   const [loading, setLoading] = useState(true);

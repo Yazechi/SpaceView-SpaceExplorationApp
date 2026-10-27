@@ -1,7 +1,13 @@
 import { timelineEvents } from '../data/spaceData';
 import Timeline from '../components/Timeline/Timeline';
+import useSEO from '../hooks/useSEO';
 
 function TimelinePage() {
+  useSEO({
+    title: "Space Exploration Timeline",
+    description: "An interactive chronology of the greatest milestones and achievements in human spaceflight and cosmos exploration on SpaceView.",
+    canonicalUrl: "https://space-view-rho.vercel.app/timeline",
+  });
   return (
     <div className="page">
       <div className="container">

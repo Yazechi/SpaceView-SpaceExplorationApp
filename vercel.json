@@ -1,11 +1,23 @@
 {
+  "cleanUrls": true,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "all"
+        }
+      ]
+    }
+  ],
   "rewrites": [
     {
       "source": "/exoplanet-api/:path*",
       "destination": "https://exoplanetarchive.ipac.caltech.edu/:path*"
     },
     {
-      "source": "/((?!assets/).*)",
+      "source": "/((?!.*\\.[\\w]+$).*)",
       "destination": "/index.html"
     }
   ]

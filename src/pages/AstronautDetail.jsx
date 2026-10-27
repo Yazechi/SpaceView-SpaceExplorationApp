@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { astronauts } from '../data/spaceData';
 import { searchNASAImages } from '../services/nasaApi';
+import useSEO from '../hooks/useSEO';
 import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage/ErrorMessage';
 import '../styles/Astronauts.css';
@@ -9,11 +10,17 @@ import '../styles/Missions.css';
 
 function AstronautDetail() {
   const { id } = useParams();
+  const astronaut = astronauts.find((a) => a.id === id);
+
+  useSEO({
+    title: astronaut ? `${astronaut.name} - Astronaut` : 'Astronaut Profile',
+    description: astronaut ? astronaut.bio : 'Astronaut biography, missions participated, and NASA archival photography.',
+    canonicalUrl: astronaut ? `https://space-view-rho.vercel.app/astronauts/${astronaut.id}` : undefined,
+  });
+
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const astronaut = astronauts.find((a) => a.id === id);
 
   const fetchImages = async () => {
     if (!astronaut) return;

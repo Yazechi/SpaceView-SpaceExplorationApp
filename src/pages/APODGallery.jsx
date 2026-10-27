@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getAPODByDate, getAPODRange } from '../services/nasaApi';
+import useSEO from '../hooks/useSEO';
 import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage/ErrorMessage';
 import '../styles/APODGallery.css';
@@ -9,6 +10,12 @@ function formatDate(date) {
 }
 
 function APODGallery() {
+  useSEO({
+    title: 'Astronomy Picture of the Day Gallery',
+    description: 'Browse NASA daily curated cosmic photography, view high-resolution space imagery, and export custom wallpapers with SpaceView.',
+    canonicalUrl: 'https://space-view-rho.vercel.app/apod-gallery',
+  });
+
   const [mode, setMode] = useState('range');
   const [singleDate, setSingleDate] = useState(() => formatDate(new Date()));
   const [rangeStart, setRangeStart] = useState(() => {
@@ -29,10 +36,13 @@ function APODGallery() {
     try {
       if (mode === 'single') {
         const data = await getAPODByDate(singleDate);
-        setItems([data]);
+        setItems(data ? [data] : []);
       } else {
         const data = await getAPODRange(rangeStart, rangeEnd);
-        setItems(Array.isArray(data) ? data.reverse() : [data]);
+        const list = Array.isArray(data) ? data : (data ? [data] : []);
+        // Always sort newest first
+        const sorted = [...list].sort((a, b) => b.date.localeCompare(a.date));
+        setItems(sorted);
       }
     } catch (err) {
       setError(err.message);
@@ -50,8 +60,8 @@ function APODGallery() {
     setExporting(true);
     const img = new Image();
     img.crossOrigin = 'anonymous';
-    // Use standard url if hdurl doesn't exist
-    img.src = selectedItem.url;
+    // Use hdurl for highest wallpaper quality if available, falling back to url
+    img.src = selectedItem.hdurl || selectedItem.url;
     
     img.onload = () => {
       try {

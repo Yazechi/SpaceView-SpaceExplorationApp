@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getDONKI_CME, getDONKI_GST, getDONKI_FLR } from '../services/nasaApi';
+import useSEO from '../hooks/useSEO';
 import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage/ErrorMessage';
 import '../styles/SpaceWeather.css';
@@ -39,6 +40,12 @@ function getFlareColor(cls) {
 }
 
 function SpaceWeather() {
+  useSEO({
+    title: 'Live Space Weather & Solar Dashboard',
+    description: 'Monitor real-time space weather events from NASA DONKI: solar flares, geomagnetic storms, and coronal mass ejections with SpaceView.',
+    canonicalUrl: 'https://space-view-rho.vercel.app/space-weather',
+  });
+
   const [tab, setTab] = useState('flr');
   const [startDate, setStartDate] = useState(() => {
     const d = new Date(); d.setDate(d.getDate() - 30);

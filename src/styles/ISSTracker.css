@@ -59,6 +59,7 @@
   display: flex;
   gap: 0.75rem;
   align-items: center;
+  flex-wrap: wrap;
   margin-bottom: 1.5rem;
 }
 
@@ -70,11 +71,45 @@
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
-  transition: border-color 0.2s;
+  transition: all 0.2s ease;
 }
 
 .iss-controls button:hover {
   border-color: var(--color-accent);
+}
+
+.iss-controls button.active {
+  background: rgba(0, 212, 255, 0.15);
+  border-color: #00d4ff;
+  color: #00d4ff;
+  font-weight: 600;
+}
+
+.iss-style-toggle {
+  display: inline-flex;
+  gap: 0.25rem;
+  background: var(--color-bg-secondary);
+  padding: 0.25rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+}
+
+.iss-style-toggle button {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 6px;
+}
+
+.iss-style-toggle button.active {
+  background: var(--color-bg-card);
+  border-color: #00d4ff;
+  color: #00d4ff;
+}
+
+.iss-style-toggle button:hover:not(.active) {
+  border-color: var(--color-border);
 }
 
 .update-note {

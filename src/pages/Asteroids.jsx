@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { getNearEarthObjects } from '../services/nasaApi';
+import useSEO from '../hooks/useSEO';
 import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage/ErrorMessage';
 import '../styles/Asteroids.css';
@@ -9,6 +10,12 @@ function formatDate(date) {
 }
 
 function Asteroids() {
+  useSEO({
+    title: 'Near-Earth Asteroid Radar & Tracker',
+    description: 'Track near-Earth asteroids and monitor orbital approaches within lunar distances using live NASA NeoWS data with SpaceView.',
+    canonicalUrl: 'https://space-view-rho.vercel.app/asteroids',
+  });
+
   const [startDate, setStartDate] = useState(() => formatDate(new Date()));
   const [endDate, setEndDate] = useState(() => {
     const d = new Date();

@@ -2,17 +2,24 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { missions } from '../data/spaceData';
 import { searchNASAImages } from '../services/nasaApi';
+import useSEO from '../hooks/useSEO';
 import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage/ErrorMessage';
 import '../styles/Missions.css';
 
 function MissionDetail() {
   const { id } = useParams();
+  const mission = missions.find((m) => m.id === id);
+
+  useSEO({
+    title: mission ? `${mission.name} Mission` : 'Mission Details',
+    description: mission ? mission.description : 'Space mission details, facts, and archival NASA images.',
+    canonicalUrl: mission ? `https://space-view-rho.vercel.app/missions/${mission.id}` : undefined,
+  });
+
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const mission = missions.find((m) => m.id === id);
 
   const fetchImages = async () => {
     if (!mission) return;

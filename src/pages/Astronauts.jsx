@@ -1,10 +1,17 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { astronauts } from '../data/spaceData';
+import useSEO from '../hooks/useSEO';
 import SearchBar from '../components/SearchBar/SearchBar';
 import '../styles/Astronauts.css';
 
 function Astronauts() {
+  useSEO({
+    title: 'Astronaut Profiles & Records',
+    description: 'Profiles and flight records of pioneering astronauts and cosmonauts who shaped human space exploration history on SpaceView.',
+    canonicalUrl: 'https://space-view-rho.vercel.app/astronauts',
+  });
+
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredAstronauts = useMemo(() => {

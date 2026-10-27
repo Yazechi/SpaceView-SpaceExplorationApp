@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { celestialBodies } from '../data/spaceData';
 import { searchNASAImages } from '../services/nasaApi';
+import useSEO from '../hooks/useSEO';
 import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage/ErrorMessage';
 import '../styles/CelestialBodies.css';
@@ -14,6 +15,12 @@ function CelestialBodyDetail() {
   const [error, setError] = useState(null);
 
   const body = celestialBodies.find((b) => b.id === id);
+
+  useSEO({
+    title: body ? body.name + " - Celestial Body" : "Celestial Body Details",
+    description: body ? body.description : "Detailed celestial body information and NASA imagery.",
+    canonicalUrl: body ? "https://space-view-rho.vercel.app/celestial-bodies/" + body.id : undefined,
+  });
 
   const fetchImages = async () => {
     if (!body) return;

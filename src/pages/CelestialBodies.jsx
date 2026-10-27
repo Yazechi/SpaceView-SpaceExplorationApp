@@ -1,10 +1,17 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { celestialBodies } from '../data/spaceData';
+import useSEO from '../hooks/useSEO';
 import SearchBar from '../components/SearchBar/SearchBar';
 import '../styles/CelestialBodies.css';
 
 function CelestialBodies() {
+  useSEO({
+    title: 'Celestial Bodies & Planetary Guide',
+    description: 'Explore planets, moons, dwarf planets, and asteroids across our solar system with detailed facts and imagery on SpaceView.',
+    canonicalUrl: 'https://space-view-rho.vercel.app/celestial-bodies',
+  });
+
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState('All');
 

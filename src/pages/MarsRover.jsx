@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { searchNASAImages } from '../services/nasaApi';
+import useSEO from '../hooks/useSEO';
 import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage/ErrorMessage';
 import '../styles/MarsRover.css';
@@ -12,6 +13,12 @@ const ROVERS = [
 ];
 
 function MarsRover() {
+  useSEO({
+    title: 'Mars Rover Photos & Surface Imagery',
+    description: 'Browse photos captured by NASA Curiosity, Perseverance, Opportunity, and Spirit rovers on the surface of Mars.',
+    canonicalUrl: 'https://space-view-rho.vercel.app/mars-rover',
+  });
+
   const [rover, setRover] = useState('curiosity');
   const [photos, setPhotos] = useState([]);
   const [page, setPage] = useState(1);
@@ -27,14 +34,21 @@ function MarsRover() {
     setError(null);
     try {
       const data = await searchNASAImages(currentRover.query, 'image', page);
-      const items = (data.collection?.items || []).map((item) => ({
-        id: item.data?.[0]?.nasa_id || Math.random().toString(),
-        title: item.data?.[0]?.title || 'Mars Photo',
-        description: item.data?.[0]?.description || '',
-        date: item.data?.[0]?.date_created?.split('T')[0] || '',
-        center: item.data?.[0]?.center || '',
-        thumbnail: item.links?.[0]?.href || '',
-      }));
+      const items = (data.collection?.items || [])
+        .filter((item) => item.links?.[0]?.href)
+        .map((item) => {
+          const thumb = item.links[0].href;
+          const highRes = thumb.replace('~thumb.jpg', '~medium.jpg').replace('~small.jpg', '~medium.jpg');
+          return {
+            id: item.data?.[0]?.nasa_id || Math.random().toString(),
+            title: item.data?.[0]?.title || 'Mars Photo',
+            description: item.data?.[0]?.description || '',
+            date: item.data?.[0]?.date_created?.split('T')[0] || '',
+            center: item.data?.[0]?.center || '',
+            thumbnail: thumb,
+            highRes,
+          };
+        });
       setPhotos(items);
       setTotalHits(data.collection?.metadata?.total_hits || 0);
     } catch (err) {
@@ -121,7 +135,7 @@ function MarsRover() {
         <div className="photo-modal" onClick={() => setSelectedPhoto(null)}>
           <div className="photo-modal-content" onClick={(e) => e.stopPropagation()}>
             <button className="modal-close" onClick={() => setSelectedPhoto(null)}>X</button>
-            <img src={selectedPhoto.thumbnail} alt={selectedPhoto.title} />
+            <img src={selectedPhoto.highRes || selectedPhoto.thumbnail} alt={selectedPhoto.title} />
             <div className="modal-info">
               <h3>{selectedPhoto.title}</h3>
               {selectedPhoto.date && <p>Date: {selectedPhoto.date}</p>}
